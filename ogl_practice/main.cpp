@@ -4,6 +4,16 @@
 
 using namespace std;
 
+struct ObjPos {
+	double x;
+	double y;
+	double z;
+	double angle;
+
+	double fSpeed;
+	double rSpeed;
+
+} ppos {0, 1, 0, 0, 0, 0};
 
 
 void error_callback(int error, const char* description)
@@ -13,9 +23,41 @@ void error_callback(int error, const char* description)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	if(action == GLFW_PRESS)
+	{
+		switch(key)
+		{
+			case GLFW_KEY_UP:
+				ppos.fSpeed = 1;
+				break;
 
+			case GLFW_KEY_DOWN:
+				ppos.fSpeed = -1;
+				break;
+		}
+	}
+	else if(action == GLFW_RELEASE)
+	{
+		switch (key)
+		{
+			case GLFW_KEY_UP:
+				if(ppos.fSpeed > 0) ppos.fSpeed = 0;
+				break;
+
+			case GLFW_KEY_DOWN:
+				if (ppos.fSpeed < 0) ppos.fSpeed = 0;
+				break;
+		}
+	}
 }
 
+void updateObj(ObjPos *pos, double deltaFrameTime)
+{
+	if(pos->fSpeed != 0)
+	{
+		pos->z += deltaFrameTime * pos->fSpeed;
+	}
+}
 
 int main(void)
 {
@@ -64,8 +106,9 @@ int main(void)
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		glTranslated(0, -2, -2);
-
+		/*position the camera*/
+		glTranslated(-ppos.x, -ppos.y, -ppos.z);
+cout << ppos.z << endl;
 		glBegin(GL_QUADS);
 		glColor3d(1, 0, 0);
 		glVertex3d(-5, 0, 5);
@@ -85,6 +128,8 @@ int main(void)
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		updateObj(&ppos, deltaFrameTime);
 	}
 
 	glfwDestroyWindow(window);
