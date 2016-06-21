@@ -64,6 +64,16 @@ int main(void)
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
+		glTranslated(0, -2, -2);
+
+		glBegin(GL_QUADS);
+		glColor3d(1, 0, 0);
+		glVertex3d(-5, 0, 5);
+		glVertex3d(5, 0, 5);
+		glVertex3d(5, 0, -5);
+		glVertex3d(-5, 0, -5);
+		glEnd();
+
 		glBegin(GL_TRIANGLES);
 		glColor3f(1.f, 0.f, 0.f);
 		glVertex3d(-0.6, 0, 0);
