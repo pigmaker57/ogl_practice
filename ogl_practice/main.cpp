@@ -1,6 +1,11 @@
 //Привет
 #include <iostream>
+#include <cmath>
 #include <GLFW/glfw3.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 using namespace std;
 
@@ -34,6 +39,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			case GLFW_KEY_DOWN:
 				ppos.fSpeed = -1;
 				break;
+
+			case GLFW_KEY_LEFT:
+				ppos.rSpeed = -1;
+				break;
+
+			case GLFW_KEY_RIGHT:
+				ppos.rSpeed = 1;
+				break;
 		}
 	}
 	else if(action == GLFW_RELEASE)
@@ -47,6 +60,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			case GLFW_KEY_DOWN:
 				if (ppos.fSpeed < 0) ppos.fSpeed = 0;
 				break;
+
+			case GLFW_KEY_LEFT:
+				if (ppos.rSpeed < 0) ppos.rSpeed = 0;
+				break;
+
+			case GLFW_KEY_RIGHT:
+				if(ppos.rSpeed > 0) ppos.rSpeed = 0;
+				break;
 		}
 	}
 }
@@ -55,7 +76,13 @@ void updateObj(ObjPos *pos, double deltaFrameTime)
 {
 	if(pos->fSpeed != 0)
 	{
-		pos->z += deltaFrameTime * pos->fSpeed;
+		pos->x += sin(pos->angle) * deltaFrameTime * pos->fSpeed;
+		pos->z -= cos(pos->angle) * deltaFrameTime * pos->fSpeed;
+	}
+
+	if (pos->rSpeed != 0)
+	{
+		pos->angle += deltaFrameTime * pos->rSpeed;
 	}
 }
 
@@ -107,8 +134,9 @@ int main(void)
 		glLoadIdentity();
 
 		/*position the camera*/
+		glRotated(ppos.angle * 180 / M_PI, 0, 1, 0);
 		glTranslated(-ppos.x, -ppos.y, -ppos.z);
-cout << ppos.z << endl;
+
 		glBegin(GL_QUADS);
 		glColor3d(1, 0, 0);
 		glVertex3d(-5, 0, 5);
