@@ -86,6 +86,20 @@ void updateObj(ObjPos *pos, double deltaFrameTime)
 	}
 }
 
+//рисование квадратика пола
+void drawFloorTile(double x, double z, double xSize, double zSize)
+{
+	glPushMatrix();
+	glTranslated(x, 0, -z);
+	glBegin(GL_QUADS);
+	glVertex3d(0, 0, -zSize);
+	glVertex3d(0, 0, 0);
+	glVertex3d(xSize, 0, 0);
+	glVertex3d(xSize, 0, -zSize);
+	glEnd();
+	glPopMatrix();
+}
+
 int main(void)
 {
 	const int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
@@ -93,7 +107,7 @@ int main(void)
 
 	glfwSetErrorCallback(error_callback);
 
-	/* Initialize the library */
+	/* Инициализация либы */
 	if (!glfwInit())
 		return -1;
 
@@ -112,7 +126,13 @@ int main(void)
 
 	double lastFrameTime = 0;
 
-	/* Loop until the user closes the window */
+	/*Включаем отсечение изнаночных граней*/
+	//glEnable(GL_CULL_FACE);
+
+	/*Включаем буфер глубины*/
+	glEnable(GL_DEPTH_TEST);
+
+	/* Цикл, пока юзер не закроет окно */
 	while (!glfwWindowShouldClose(window))
 	{
 		double deltaFrameTime = glfwGetTime() - lastFrameTime;
@@ -123,9 +143,9 @@ int main(void)
 		glfwGetFramebufferSize(window, &width, &height);
 
 		glViewport(0, 0, width, height);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//set projection
+		//Настройка перспективной проекции
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glFrustum(-0.2f, 0.2f, -0.2f, 0.2f, 0.2f, 100.f);
@@ -133,18 +153,20 @@ int main(void)
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		/*position the camera*/
+		/*Установка позиции камеры*/
 		glRotated(ppos.angle * 180 / M_PI, 0, 1, 0);
 		glTranslated(-ppos.x, -ppos.y, -ppos.z);
 
-		glBegin(GL_QUADS);
+		/*рисование пола*/
 		glColor3d(1, 0, 0);
-		glVertex3d(-5, 0, 5);
-		glVertex3d(5, 0, 5);
-		glVertex3d(5, 0, -5);
-		glVertex3d(-5, 0, -5);
-		glEnd();
+		drawFloorTile(-2, -2, 1, 6);
+		glColor3d(1, 0, 1);
+		drawFloorTile(-1, -2, 6, 1);
+		glColor3d(0, 1, 0);
+		drawFloorTile(-1, -1, 4, 4);
 
+		/*стремный треугольничек*/
+		glTranslated(0, -0.5, 0);
 		glBegin(GL_TRIANGLES);
 		glColor3f(1.f, 0.f, 0.f);
 		glVertex3d(-0.6, 0, 0);
