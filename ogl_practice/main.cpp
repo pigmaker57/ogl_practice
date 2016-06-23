@@ -9,6 +9,10 @@
 
 using namespace std;
 
+const int LEVEL_SIZE_X = 5;
+const int LEVEL_SIZE_Z = 5;
+const double LEVEL_TILE_SIZE = 2;
+
 struct ObjPos {
 	double x;
 	double y;
@@ -100,8 +104,21 @@ void drawFloorTile(double x, double z, double xSize, double zSize)
 	glPopMatrix();
 }
 
+void drawLevelFloor(int floor[LEVEL_SIZE_X][LEVEL_SIZE_Z])
+{
+
+}
+
 int main(void)
 {
+	int levelFloor[LEVEL_SIZE_X][LEVEL_SIZE_Z] = {
+		{ 0, 0, 0, 1, 1},
+		{ 0, 0, 1, 1, 0 },
+		{ 0, 1, 1, 0, 0 },
+		{ 0, 0, 1, 0, 0 },
+		{ 0, 0, 0, 0, 0 }
+	};
+
 	const int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 480;
 	GLFWwindow* window;
 
@@ -158,12 +175,14 @@ int main(void)
 		glTranslated(-ppos.x, -ppos.y, -ppos.z);
 
 		/*рисование пола*/
-		glColor3d(1, 0, 0);
+		/*glColor3d(1, 0, 0);
 		drawFloorTile(-2, -2, 1, 6);
 		glColor3d(1, 0, 1);
 		drawFloorTile(-1, -2, 6, 1);
 		glColor3d(0, 1, 0);
 		drawFloorTile(-1, -1, 4, 4);
+		*/
+		drawLevelFloor(levelFloor);
 
 		/*стремный треугольничек*/
 		glTranslated(0, -0.5, 0);
